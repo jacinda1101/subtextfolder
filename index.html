@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtext</title>
+    <style>
+        body {
+            cursor: url('mouse.svg'), auto;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .background-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .head-img {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            display: block;
+            z-index: 1; 
+        }
+
+        .folder-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .folder {
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-items: center;
+            align-items: center;
+            margin: 13px; /* 加入間距避免重疊 */
+        }
+
+        .folder img {
+            width: auto;
+            height: 7vw;
+            border-radius: 10px;
+            padding: 10px;
+            filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.4));
+        }
+
+        .folder span {
+            display: block;
+            margin-top: 5px;
+            padding: 5px;
+            background: transparent;
+            border-radius: 3px;
+            font-size: 20px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .folder:active img {
+            background: rgba(128, 128, 128, 0.5);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .folder:active span {
+            background: rgba(97, 255, 228, 0.9);
+            color: rgb(0, 0, 0);
+            border-radius: 7px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            max-width: 963px;
+            height: 90%;
+            transform: translate(-50%, -50%);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            width: 100%;
+            height: 57px;
+            background-image: url('./img/windowhead.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            z-index: 101;
+        }
+
+        .video-container {
+            flex-grow: 1;
+            overflow: hidden;
+            background: #ededed;
+        }
+
+        .modal video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: transparent;
+        }
+
+        .controls {
+            position: absolute;
+            top: 1vw;
+            left: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 91px;
+            z-index: 110; /* 確保控制按鈕顯示在最上層 */
+        }
+
+        .controls button {
+            width: 23px;
+            height: 23px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 0;
+            padding: 0;
+        }
+
+        .controls .resize-small {
+            background-color: #febc2e;
+            pointer-events: none;
+        }
+
+        .controls .resize-close {
+            background-color: #ff5f57;
+        }
+
+        .controls .resize-large {
+            background-color: #28c840;
+        }
+
+        .controls button:hover {
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .folder img {
+                height: 15vw;
+            }
+            .folder span {
+                font-size: 16px;
+            }
+            .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30.5vw;
+            position: fixed;
+            bottom: 0.5vw; /* 調整按鈕位置 */
+            width: 100%;
+            z-index: 101;
+        }
+        }
+
+        @media (max-width: 480px) {
+            .folder img {
+                height: 9vw;
+            }
+            .folder span {
+                font-size: 14px;
+            }
+            .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30.5vw;
+            position: fixed;
+            bottom: 0.5vw; /* 調整按鈕位置 */
+            width: 100%;
+            z-index: 101;
+        }
+        }
+
+        .footer-img {
+            width: 50%; /* 設定圖片寬度為 80% */
+            height: auto;
+            display: block;
+            margin: 0 auto; /* 使圖片居中 */
+            position: fixed;
+            bottom: 0; /* 固定在頁面底部 */
+            left: 50%; /* 使圖片居中於視窗 */
+            transform: translateX(-50%); /* 調整圖片，使其在水平方向上居中 */
+            z-index: 100;
+    
+        }
+
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 31.5vw;
+            position: fixed;
+            bottom: 1vw; /* 調整按鈕位置 */
+            width: 100%;
+            z-index: 101;
+        }
+
+        .footer-buttons a {
+            display: inline-block;
+        }
+
+        .footer-buttons img {
+            width: 8vw; /* 調整按鈕大小 */
+            height: 8vw; /* 調整按鈕大小 */
+        }
+
+        
+    </style>
+</head>
+<body>
+    <img src="./img/bg.png" alt="background" class="background-img">
+    <img src="./img/head.png" alt="Website Head" class="head-img">
+
+    <div class="folder-container" id="folderContainer">
+        <div id="btn1" class="folder" onclick="openModal(1)">
+            <img src="img/button1.png" alt="Folder 1">
+            <span>不再聯絡.subtext</span>
+        </div>
+        <div id="btn2" class="folder" onclick="openModal(2)">
+            <img src="img/button2.png" alt="Folder 2">
+            <span>隨便你啦.subtext</span>
+        </div>
+        <div id="btn3" class="folder" onclick="openModal(3)">
+            <img src="img/button3.png" alt="Folder 3">
+            <span>沒事只是想走了.subtext</span>
+        </div>
+        <div id="btn4" class="folder" onclick="openModal(4)">
+            <img src="img/button4.png" alt="Folder 4">
+            <span>抽一張但不會還啦.subtext</span>
+        </div>
+        <div id="btn5" class="folder" onclick="openModal(5)">
+            <img src="img/button5.png" alt="Folder 5">
+            <span>有空幫我嗎.subtext</span>
+        </div>
+        <div id="btn6" class="folder" onclick="openModal(6)">
+            <img src="img/button6.png" alt="Folder 6">
+            <span>這很難實現.subtext</span>
+        </div>
+        <div id="btn7" class="folder" onclick="openModal(7)">
+            <img src="img/button7.png" alt="Folder 7">
+            <span>不想當面拒絕你.subtext</span>
+        </div>
+        <div id="btn8" class="folder" onclick="openModal(8)">
+            <img src="img/button8.png" alt="Folder 8">
+            <span>快點回來.subtext</span>
+        </div>
+        <div id="btn9" class="folder" onclick="openModal(9)">
+            <img src="img/button9.png" alt="Folder 9">
+            <span>擔心你的生活環境.subtext</span>
+        </div>
+    </div>
+
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"></div>
+            <div class="video-container">
+                <video id="videoPlayer" controls></video>
+            </div>
+            <div class="controls">
+                <button class="resize-close" onclick="closeModal()"></button>
+                <button class="resize-small" onclick="resizeVideo('small')"></button>
+                <button class="resize-large" onclick="resizeVideo('large')"></button>
+            </div>
+        </div>
+    </div>
+
+    <img src="./img/foot.png" alt="Footer Image" class="footer-img">
+    <div class="footer-buttons">
+        <a href="https://wanmaru01.github.io/subtext-translator.github.io/" class="footer-btn left">
+            <img src="./img/translate.png" alt="Translate Button">
+        </a>
+        <a href="https://jacinda1101.github.io/Messagebubble/" class="footer-btn right">
+            <img src="./img/bubble.png" alt="Bubble Button">
+        </a>
+    </div>
+
+    <script>
+        function openModal(videoNum) {
+            let modal = document.getElementById('videoModal');
+            let video = document.getElementById('videoPlayer');
+            video.src = `video/video${videoNum}.mp4`;
+            video.autoplay = true;
+            video.muted = true;
+            video.play();
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            let modal = document.getElementById('videoModal');
+            let video = document.getElementById('videoPlayer');
+            video.pause();
+            modal.style.display = 'none';
+        }
+
+        function resizeVideo(size) {
+            let modalContent = document.querySelector('.modal-content');
+            if (size === 'small') {
+                modalContent.style.transform = 'scale(0.8)';
+            } else if (size === 'large') {
+                modalContent.style.transform = 'scale(1.2)';
+            }
+        }
+
+        // 隨機排列 folder 元素
+        window.onload = function() {
+            const folderContainer = document.getElementById('folderContainer');
+            const folders = Array.from(folderContainer.getElementsByClassName('folder'));
+            for (let i = folders.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                folderContainer.appendChild(folders[j]);
+                folders[j].style.order = i; // 增加隨機排列順序
+            }
+        }
+    </script>
+</body>
+</html>
