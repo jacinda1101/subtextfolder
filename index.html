@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subtext</title>
+    <title>真心話資料夾</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon"> 
     <style>
         body {
             cursor: url('mouse.svg'), auto;
@@ -56,8 +57,8 @@
 
         .folder img {
             width: auto;
-            height: 7vw;
-            border-radius: 10px;
+            height: 8vw;
+            border-radius: 15px;
             padding: 10px;
             filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.4));
         }
@@ -90,11 +91,12 @@
             top: 50%;
             left: 50%;
             width: 100%;
-            max-width: 963px;
+            max-width: 380px; /* 調整寬度 */
             height: 90%;
             transform: translate(-50%, -50%);
             justify-content: center;
             align-items: center;
+            z-index: 300;
         }
 
         .modal-content {
@@ -103,11 +105,12 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 100%; /* 調整高度 */
         }
 
         .modal-header {
             width: 100%;
-            height: 57px;
+            height: 35px;
             background-image: url('./img/windowhead.png');
             background-size: cover;
             background-position: center;
@@ -119,12 +122,15 @@
             flex-grow: 1;
             overflow: hidden;
             background: #ededed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .modal video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 320%;
+            height: auto;
+            object-fit: contain;
             background: transparent;
         }
 
@@ -134,13 +140,13 @@
             left: 10px;
             display: flex;
             justify-content: space-between;
-            width: 91px;
+            width: 55px;
             z-index: 110; /* 確保控制按鈕顯示在最上層 */
         }
 
         .controls button {
-            width: 23px;
-            height: 23px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             border: none;
             cursor: pointer;
@@ -171,17 +177,20 @@
                 height: 15vw;
             }
             .folder span {
-                font-size: 16px;
+                font-size: 14px;
             }
             .footer-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 30.5vw;
-            position: fixed;
-            bottom: 0.5vw; /* 調整按鈕位置 */
-            width: 100%;
-            z-index: 101;
-        }
+                display: flex;
+                justify-content: center;
+                gap: 30.5vw;
+                position: fixed;
+                bottom: 0.5vw; /* 調整按鈕位置 */
+                width: 100%;
+                z-index: 101;
+            }
+            .controls {
+                top: 2vw;
+            }
         }
 
         @media (max-width: 480px) {
@@ -189,17 +198,17 @@
                 height: 9vw;
             }
             .folder span {
-                font-size: 14px;
+                font-size: 16px;
             }
             .footer-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 30.5vw;
-            position: fixed;
-            bottom: 0.5vw; /* 調整按鈕位置 */
-            width: 100%;
-            z-index: 101;
-        }
+                display: flex;
+                justify-content: center;
+                gap: 30.5vw;
+                position: fixed;
+                bottom: 0.5vw; /* 調整按鈕位置 */
+                width: 100%;
+                z-index: 101;
+            }
         }
 
         .footer-img {
@@ -212,7 +221,6 @@
             left: 50%; /* 使圖片居中於視窗 */
             transform: translateX(-50%); /* 調整圖片，使其在水平方向上居中 */
             z-index: 100;
-    
         }
 
         .footer-buttons {
@@ -234,7 +242,14 @@
             height: 8vw; /* 調整按鈕大小 */
         }
 
-        
+        .footer-buttons a {
+            display: inline-block;
+            transition: transform 0.3s ease; /* 平滑過渡效果 */
+        }
+
+        .footer-buttons a:hover {
+            transform: scale(1.1); /* 放大效果 */
+        }
     </style>
 </head>
 <body>
@@ -296,11 +311,11 @@
 
     <img src="./img/foot.png" alt="Footer Image" class="footer-img">
     <div class="footer-buttons">
-        <a href="https://wanmaru01.github.io/subtext-translator.github.io/" class="footer-btn left">
-            <img src="./img/translate.png" alt="Translate Button">
-        </a>
-        <a href="https://jacinda1101.github.io/Messagebubble/" class="footer-btn right">
+        <a href="https://jacinda1101.github.io/Messagebubble/" class="footer-btn right" target="_blank">
             <img src="./img/bubble.png" alt="Bubble Button">
+        </a>
+        <a href="https://wanmaru01.github.io/subtext-translator.github.io/" class="footer-btn left" target="_blank">
+            <img src="./img/translate.png" alt="Translate Button">
         </a>
     </div>
 
