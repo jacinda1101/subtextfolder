@@ -1,0 +1,286 @@
+body {
+    cursor: url('mouse.svg'), auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* 防止水平滾動條 */
+    min-height: 100vh; /* 確保 body 至少等於視窗高度 */
+    background: 
+        linear-gradient(to bottom, #00ffff 0%, #e50771 10%, rgba(229, 7, 113, 0.5) 15%, transparent 20%, transparent 70%, rgba(229, 7, 113, 0.5) 80%, #e50771 85%, #00ffff 100%), /* 漸層 */
+        url('./img/bg00.png'), /* 背景圖片 */
+        url('./img/pattern.png'); /* 圖案 */
+    background-repeat: no-repeat, no-repeat, repeat; /* 漸層不重複，背景圖片不重複，圖案重複 */
+    background-size: cover, cover, 100px 100px; /* 漸層覆蓋整個背景，背景圖片裁切，圖案大小為 100x100px */
+    background-attachment: scroll, scroll, scroll; /* 背景隨滾動裁切 */
+    
+}
+
+.background-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw; /* 使用視窗寬度 */
+    height: 100vh; /* 使用視窗高度 */
+    object-fit: cover;
+    z-index: -1;
+}
+/*header*/
+.head-container {
+    display: flex;
+    justify-content: space-between; /* 左右對齊 */
+    align-items: center; /* 垂直置中 */
+    background-color: #e6e6e6; /* 背景色 */
+    height: 45px; /* 固定高度 */
+    width: 100%; /* 寬度隨視窗變化 */
+    padding: 0 10px; /* 增加左右內邊距 */
+    box-sizing: border-box; /* 包含內邊距在寬度內 */
+}
+
+.head-container img {
+    height: 100%; /* 圖片高度填滿容器 */
+    object-fit: contain; /* 保持圖片比例 */
+}
+
+
+/*資料夾按鈕*/
+.folder-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+.folder {
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    margin: 13px; /* 加入間距避免重疊 */
+}
+
+.folder img {
+    width: auto;
+    height: 8vw;
+    border-radius: 15px;
+    padding: 25px;
+    filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.4));
+}
+
+.folder span {
+    color: rgb(255, 255, 255);
+    display: block;
+    margin-top: 5px;
+    padding: 5px;
+    background: transparent;
+    border-radius: 3px;
+    font-size: 15px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.folder:active img {
+    background: rgba(180, 200, 197, 0.8);
+    color: white;
+    border-radius: 15px;
+}
+
+.folder:active span {
+    background: rgba(252, 21, 14, 0.75);
+    color: rgb(255, 255, 255);
+    border-radius: 7px;
+}
+
+
+/*影片播放器*/
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    max-width: 380px; /* 調整寬度 */
+    height: 90%;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+    align-items: center;
+    z-index: 300;
+}
+
+.modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    height: 100%; /* 調整高度 */
+}
+
+.modal-header {
+    width: 100%;
+    height: 35px;
+    background-image: url('./img/windowhead.png');
+    background-size: cover;
+            background-position: center;
+    position: relative;
+    z-index: 101;
+        }
+
+.video-container {
+    flex-grow: 1;
+    overflow: hidden;
+    background: #ededed; /* 背景色 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* 確保容器寬度填滿 */
+    height: 100%; /* 確保容器高度填滿 */
+}
+
+.modal video {
+    width: 100%; /* 讓影片寬度填滿容器 */
+    height: 100%; /* 讓影片高度填滿容器 */
+    object-fit: contain; /* 保持影片比例並完整顯示 */
+    background: transparent; /* 確保背景透明 */
+}
+
+/*視窗按鈕*/
+
+.controls {
+    position: absolute;
+    top: 1vw;
+    left: 10px;
+    display: flex;
+    justify-content: space-between;
+            width: 55px;
+            z-index: 110; /* 確保控制按鈕顯示在最上層 */
+}
+
+.controls button {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 0;
+    padding: 0;
+}
+
+.controls .resize-small {
+    background-color: #febc2e;
+    pointer-events: none;
+}
+
+.controls .resize-close {
+    background-color: #ff5f57;
+    }
+
+.controls .resize-large {
+    background-color: #28c840;
+    }
+
+.controls button:hover {
+    transform: scale(1.2);
+}
+
+.footer-img {
+    width: 400px; /* 設定圖片寬度為 80% */
+    height: auto;
+    display: block;
+    margin: 0 auto; /* 使圖片居中 */
+    position: fixed;
+    bottom: 0; /* 固定在頁面底部 */
+    left: 50%; /* 使圖片居中於視窗 */
+    transform: translateX(-50%); /* 調整圖片，使其在水平方向上居中 */
+    z-index: 100;
+ }
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap:260px;
+    position: fixed;
+    bottom: 10px; /* 調整按鈕位置 */
+    width: 100%;
+    z-index: 101;
+}
+
+.footer-buttons a {
+    display: inline-block;
+}
+
+.footer-buttons img {
+    width: 60px; /* 調整按鈕大小 */
+    height: 60px; /* 調整按鈕大小 */
+}
+
+.footer-buttons a {
+    display: inline-block;
+    transition: transform 0.3s ease; /* 平滑過渡效果 */
+}
+
+.footer-buttons a:hover {
+    transform: scale(1.1); /* 放大效果 */
+    }
+@media (max-width: 768px) {
+    .head-container {
+        height: 35px;
+    }
+    .head-container img {
+        height: 80%; /* 圖片高度填滿容器 */
+        object-fit: contain; /* 保持圖片比例 */
+    }
+    .folder img {
+        height: 60px;
+        }
+    .folder span {
+        font-size: 14px;
+        }
+    .footer-buttons {
+        display: flex;
+        justify-content: center;
+        gap:260px;
+        position: fixed;
+        bottom: 10px; /* 調整按鈕位置 */
+        width: 100%;
+        z-index: 101;
+        }
+    .controls {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    display: flex;
+    justify-content: space-between;
+            width: 55px;
+            z-index: 110; /* 確保控制按鈕顯示在最上層 */
+}
+
+    }
+/*手機*/
+@media (max-width: 480px) {
+    .head-container {
+        height: 25px;
+    }
+    .head-container img {
+        height: 80%; /* 圖片高度填滿容器 */
+        object-fit: contain; /* 保持圖片比例 */
+    }
+    .folder {
+        margin: 7px; /* 加入間距避免重疊 */
+    }
+    .folder img {
+        height: 60px;
+        padding: 10px;
+        }
+    .folder span {
+        font-size: 12px;
+       }
+
+}
