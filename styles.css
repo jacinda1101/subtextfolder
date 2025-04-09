@@ -13,8 +13,8 @@ body {
     background-repeat: no-repeat, no-repeat, repeat; /* 漸層不重複，背景圖片不重複，圖案重複 */
     background-size: cover, cover, 100px 100px; /* 漸層覆蓋整個背景，背景圖片裁切，圖案大小為 100x100px */
     background-attachment: scroll, scroll, scroll; /* 背景隨滾動裁切 */
-    
-}
+    background-color: #1e010b; /* 默認背景顏色 */
+    }
 
 .background-img {
     position: absolute;

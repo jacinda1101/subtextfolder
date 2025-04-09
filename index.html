@@ -5,17 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>真心話資料夾</title>
     <link rel="icon" href="icon.ico" type="image/x-icon"> 
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            cursor: url('mouse.svg'), auto;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* 防止水平滾動條 */
+        }
 
+        .background-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw; /* 使用視窗寬度 */
+            height: 100vh; /* 使用視窗高度 */
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .head-img {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            display: block;
+            z-index: 1; 
+        }
+
+        .folder-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .folder {
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-items: center;
+            align-items: center;
+            margin: 13px; /* 加入間距避免重疊 */
+        }
+
+        .folder img {
+            width: auto;
+            height: 8vw;
+            border-radius: 15px;
+            padding: 10px;
+            filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.4));
+        }
+
+        .folder span {
+            display: block;
+            margin-top: 5px;
+            padding: 5px;
+            background: transparent;
+            border-radius: 3px;
+            font-size: 20px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .folder:active img {
+            background: rgba(128, 128, 128, 0.5);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .folder:active span {
+            background: rgba(97, 255, 228, 0.9);
+            color: rgb(0, 0, 0);
+            border-radius: 7px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            max-width: 380px; /* 調整寬度 */
+            height: 90%;
+            transform: translate(-50%, -50%);
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+        }
+
+        .modal-content {
+            position: relative;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 100%; /* 調整高度 */
+        }
+
+        .modal-header {
+            width: 100%;
+            height: 35px;
+            background-image: url('./img/windowhead.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            z-index: 101;
+        }
+
+        .video-container {
+            flex-grow: 1;
+            overflow: hidden;
+            background: #ededed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal video {
+            width: 320%;
+            height: auto;
+            object-fit: contain;
+            background: transparent;
+        }
+
+        .controls {
+            position: absolute;
+            top: 1vw;
+            left: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 55px;
+            z-index: 110; /* 確保控制按鈕顯示在最上層 */
+        }
+
+        .controls button {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 0;
+            padding: 0;
+        }
+
+        .controls .resize-small {
+            background-color: #febc2e;
+            pointer-events: none;
+        }
+
+        .controls .resize-close {
+            background-color: #ff5f57;
+        }
+
+        .controls .resize-large {
+            background-color: #28c840;
+        }
+
+        .controls button:hover {
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .folder img {
+                height: 15vw;
+            }
+            .folder span {
+                font-size: 14px;
+            }
+            .footer-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 30.5vw;
+                position: fixed;
+                bottom: 0.5vw; /* 調整按鈕位置 */
+                width: 100%;
+                z-index: 101;
+            }
+            .controls {
+                top: 2vw;
+            }
+        }
+
+
+
+        .footer-img {
+            width: 50%; /* 設定圖片寬度為 80% */
+            height: auto;
+            display: block;
+            margin: 0 auto; /* 使圖片居中 */
+            position: fixed;
+            bottom: 0; /* 固定在頁面底部 */
+            left: 50%; /* 使圖片居中於視窗 */
+            transform: translateX(-50%); /* 調整圖片，使其在水平方向上居中 */
+            z-index: 100;
+        }
+
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 31.5vw;
+            position: fixed;
+            bottom: 1vw; /* 調整按鈕位置 */
+            width: 100%;
+            z-index: 101;
+        }
+
+        .footer-buttons a {
+            display: inline-block;
+        }
+
+        .footer-buttons img {
+            width: 8vw; /* 調整按鈕大小 */
+            height: 8vw; /* 調整按鈕大小 */
+        }
+
+        .footer-buttons a {
+            display: inline-block;
+            transition: transform 0.3s ease; /* 平滑過渡效果 */
+        }
+
+        .footer-buttons a:hover {
+            transform: scale(1.1); /* 放大效果 */
+        }
+        @media (max-width: 480px) {
+            .folder img {
+                height: 12vw;
+            }
+            .folder span {
+                font-size: 12px;
+            }
+            .footer-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 35.7vw;
+                position: fixed;
+                bottom: 0.5vw; /* 調整按鈕位置 */
+                width: 100%;
+                z-index: 101;       
+                bottom: 4px; /* 調整按鈕位置 */
+            }
+        }
+    </style>
 </head>
 <body>
-
-    <!--ig:https://www.instagram.com/subtext_2025?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==
-    https://www.threads.net/@subtext_2025?xmt=AQGzQc5qrY46E4ZGnCkrsb47pUEn1np-JEFJA0-SjnbMFDg-->
-    <div class="head-container">
-        <img src="./img/head01.webp" alt="Left Image">
-        <img src="./img/head02.webp" alt="Right Image">
-    </div>
+    <img src="./img/bg.png" alt="background" class="background-img">
+    <img src="./img/head.png" alt="Website Head" class="head-img">
 
     <div class="folder-container" id="folderContainer">
         <div id="btn1" class="folder" onclick="openModal(1)">
@@ -55,12 +297,13 @@
             <span>擔心你的生活環境.subtext</span>
         </div>
     </div>
-    
+
     <div id="videoModal" class="modal">
         <div class="modal-content">
             <div class="modal-header"></div>
             <div class="video-container">
-            <video id="videoPlayer" controls loop></video>            </div>
+                <video id="videoPlayer" controls></video>
+            </div>
             <div class="controls">
                 <button class="resize-close" onclick="closeModal()"></button>
                 <button class="resize-small" onclick="resizeVideo('small')"></button>
@@ -80,146 +323,42 @@
     </div>
 
     <script>
-    // 定義兩組漸層
-    let currentGradientIndex = 0;
-    let gradientInterval;
+        function openModal(videoNum) {
+            let modal = document.getElementById('videoModal');
+            let video = document.getElementById('videoPlayer');
+            video.src = `video/video${videoNum}.mp4`;
+            video.autoplay = true;
+            video.muted = true;
+            video.play();
+            modal.style.display = 'flex';
+        }
 
-    // 定義兩組漸層
-    const gradients = [
-        "linear-gradient(to bottom, #00ffff 7%, #e50771 12%, rgba(229, 7, 113, 0.5) 17%, transparent 30%, transparent 70%, rgba(229, 7, 113, 0.5) 80%, #e50771 85%, #00ffff 100%)",
-        "linear-gradient(to bottom, #00accd 7%, #d6262d 12%, rgba(214, 38, 45, 0.5) 17%, transparent 30%, transparent 70%, rgba(214, 38, 45, 0.5) 80%, #d6262d 85%, #00accd 100%)"
-    ];
+        function closeModal() {
+            let modal = document.getElementById('videoModal');
+            let video = document.getElementById('videoPlayer');
+            video.pause();
+            modal.style.display = 'none';
+        }
 
-    function startGradientInterval() {
-    gradientInterval = setInterval(() => {
-        currentGradientIndex = (currentGradientIndex + 1) % gradients.length;
-        document.body.style.background = `
-            ${gradients[currentGradientIndex]},
-            url('./img/bg00.png'),
-            url('./img/pattern.webp'),
-            #1e010b`;
-        document.body.style.backgroundRepeat = "no-repeat, no-repeat, repeat, no-repeat";
-        document.body.style.backgroundSize = "cover, cover, 100px 100px, auto";
-    }, 3000); // 每 3 秒切換一次背景
-}
-    // 停止背景漸層切換
-    function stopGradientInterval() {
-        clearInterval(gradientInterval);
-    }
-
-    // 選取所有 .folder span 元素
-    const folderSpans = document.querySelectorAll('.folder span');
-
-    function openModal(videoNum) {
-    let modal = document.getElementById('videoModal');
-    let video = document.getElementById('videoPlayer');
-    
-    // 設定影片來源並播放
-    video.src = `video/video${videoNum}.webm`;
-    video.loop = true; // 啟用循環播放
-    video.muted = false; // 關閉靜音
-    video.volume = 0.5; // 設置音量為最大值
-    video.autoplay = true;
-    video.play();
-    
-    // 顯示影片視窗
-    modal.style.display = 'flex';
-
-    // 停止背景漸層切換
-    stopGradientInterval();
-
-    // 更改背景為 changebg.webp
-    document.body.style.background = `url('./img/changebg.webp')`;
-    document.body.style.backgroundSize = 'cover'; // 背景自適應視窗大小
-    document.body.style.backgroundRepeat = 'no-repeat'; // 背景不重複
-    document.body.style.backgroundAttachment = 'fixed'; // 背景固定
-
-    // 將 .folder span 的文字顏色改為黑色
-    folderSpans.forEach(span => {
-    span.style.color = 'black';
-    });
-}
-
-    function closeModal() {
-        let modal = document.getElementById('videoModal');
-        let video = document.getElementById('videoPlayer');
-        
-        // 暫停影片並隱藏視窗
-        video.pause();
-        modal.style.display = 'none';
-
-        // 恢復原本的背景
-        document.body.style.background = `
-            ${gradients[currentGradientIndex]},
-            url('./img/bg00.png'),
-            url('./img/pattern.webp'),
-            #1e010b`;
-        document.body.style.backgroundRepeat = "no-repeat, no-repeat, repeat, no-repeat";
-        document.body.style.backgroundSize = "cover, cover, 100px 100px, auto";
-
-        // 恢復背景漸層切換
-        startGradientInterval();
-
-         // 將 .folder span 的文字顏色改回白色
-        folderSpans.forEach(span => {
-        span.style.color = 'white';
-        });
-    }
-
-    // 啟動背景漸層切換
-    startGradientInterval();
-
-    // 定義圖片陣列
-    const popupImages = [
-        './img/popup1.webp',
-        './img/popup2.webp',
-        './img/popup3.webp',
-        './img/popup4.webp'
-    ];
-
-    let lastPopupTime = 0; // 用於追蹤上一次彈出視窗的時間
-    const popupInterval = 7000; // 設定視窗之間的最小間隔時間（毫秒）
-
-    function showPopupImage() {
-        // 隨機選擇一張圖片
-        const randomIndex = Math.floor(Math.random() * popupImages.length);
-        const imageUrl = popupImages[randomIndex];
-
-        // 隨機生成位置（範圍：視窗內的 10% 到 90%）
-        const randomTop = Math.random() * 80 + 10; // 10% ~ 90%
-        const randomLeft = Math.random() * 80 + 10; // 10% ~ 90%
-
-        // 隨機生成寬度和高度（範圍：150px 到 300px）
-        const randomSize = Math.random() * 150 + 150; // 150px ~ 300px
-
-        // 建立圖片元素
-        const popupImage = document.createElement('img');
-        popupImage.src = imageUrl;
-        popupImage.alt = ''; // 清空 alt 屬性，避免渲染問題
-        popupImage.style.position = 'fixed';
-        popupImage.style.top = `${randomTop}%`; // 隨機垂直位置
-        popupImage.style.left = `${randomLeft}%`; // 隨機水平位置
-        popupImage.style.transform = 'translate(-50%, -50%)';
-        popupImage.style.width = `${randomSize}px`; // 隨機寬度
-        popupImage.style.height = `${randomSize}px`; // 隨機高度
-        popupImage.style.borderRadius = '15px'; // 圓角
-        popupImage.style.zIndex = '1000'; // 確保圖片顯示在最上層
-
-        // 將圖片加入到 body
-        document.body.appendChild(popupImage);
-
-        // 6 秒後移除圖片
-        setTimeout(() => {
-            if (popupImage && popupImage.parentNode) {
-                popupImage.parentNode.removeChild(popupImage); // 確保完全移除圖片
+        function resizeVideo(size) {
+            let modalContent = document.querySelector('.modal-content');
+            if (size === 'small') {
+                modalContent.style.transform = 'scale(0.8)';
+            } else if (size === 'large') {
+                modalContent.style.transform = 'scale(1.2)';
             }
-        }, 6000);
-    }
+        }
 
-    // 啟動彈出圖片的定時器
-    setInterval(() => {
-        showPopupImage();
-    }, popupInterval);
+        // 隨機排列 folder 元素
+        window.onload = function() {
+            const folderContainer = document.getElementById('folderContainer');
+            const folders = Array.from(folderContainer.getElementsByClassName('folder'));
+            for (let i = folders.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                folderContainer.appendChild(folders[j]);
+                folders[j].style.order = i; // 增加隨機排列順序
+            }
+        }
     </script>
 </body>
 </html>
