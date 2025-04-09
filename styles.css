@@ -20,7 +20,7 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw; /* 使用視窗寬度 */
+    width: 100%; /* 確保背景圖片寬度不超出視窗 */
     height: 100vh; /* 使用視窗高度 */
     object-fit: cover;
     z-index: -1;
